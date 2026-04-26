@@ -15,7 +15,7 @@ OBS polish layer — audio filters + brand overlay + webcam reaction cam scaffol
 - `obs/browser-sources/lower-third.html` — fetches brand.json, auto-rotates taglines every 8 sec, reloads JSON every 60 sec for live edits
 
 **Background removal plugin docs:**
-- `obs/PLUGINS.md` — pinned versions, install URLs, recovery procedure for obs-backgroundremoval (manual .pkg from locaal-ai/obs-backgroundremoval v1.1.13)
+- `obs/PLUGINS.md` — pinned versions, install URLs, recovery procedure for obs-backgroundremoval (manual .pkg from royshil/obs-backgroundremoval v1.3.7; v1.1.13 from earlier handoff was a hallucination — corrected 2026-04-26)
 
 **Webcam reaction cam scaffolding:**
 - Hammerspoon **Caps+R** hotkey added (in `~/.hammerspoon/init.lua`) — emits F13 globally, OBS catches as "Switch to scene Reaction Cam" hotkey

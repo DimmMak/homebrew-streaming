@@ -10,12 +10,14 @@ OBS plugins are the most fragile layer of the streaming stack. Document tested v
 
 **Purpose:** AI background removal for webcam feed — no green screen needed. Uses CoreML on Apple Silicon for low CPU cost.
 
-**Tested version:** v1.1.13 (2026-04 release)
+**Tested version:** v1.3.7 (2026-02-25 release — last stable before broken 1.4.0 pre-release)
+
+**Note:** earlier docs pinned v1.1.13 — that version does not exist on the upstream repo (verified 2026-04-26). Repo URL also changed: `locaal-ai/obs-backgroundremoval` redirects to `royshil/obs-backgroundremoval`.
 
 **Install:**
 
-1. Download the macOS `.pkg` from: https://github.com/locaal-ai/obs-backgroundremoval/releases/tag/v1.1.13
-2. Specifically: `obs-backgroundremoval-1.1.13-macos-universal.pkg`
+1. Download the macOS `.pkg` from: https://github.com/royshil/obs-backgroundremoval/releases/tag/1.3.7
+2. Specifically: `obs-backgroundremoval-1.3.7-macos-universal.pkg` (~99.8 MB)
 3. Quit OBS first
 4. Run the .pkg installer
 5. Re-launch OBS
