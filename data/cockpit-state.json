@@ -1,0 +1,9 @@
+{
+  "_comment": "State file for cockpit-mech-portrait.html. Hammerspoon writes here on Caps+J/K/L/; (size) and Caps+D/V (mode). Overlay polls every 1 sec.",
+  "size": "small",
+  "mode": "decorative",
+  "_options": {
+    "size": ["small", "medium", "large", "fullscreen"],
+    "mode": ["decorative", "live"]
+  }
+}

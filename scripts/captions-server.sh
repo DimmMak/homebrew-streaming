@@ -36,6 +36,8 @@ ROUTES = {
     '/notes':         (os.path.join(BS_DIR, 'notes.html'),         'text/html'),
     '/hotkeys.json':  (os.path.join(DATA_DIR, 'hotkeys.json'),     'application/json'),
     '/brand.json':    (os.path.join(DATA_DIR, 'brand.json'),       'application/json'),
+    '/cockpit-mech':       (os.path.join(BS_DIR, 'cockpit-mech-portrait.html'), 'text/html'),
+    '/cockpit-state.json': (os.path.join(DATA_DIR, 'cockpit-state.json'),       'application/json'),
 }
 
 class CaptionHandler(BaseHTTPRequestHandler):

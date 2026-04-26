@@ -1,5 +1,5 @@
 {
-  "version": "0.1",
+  "version": "0.4",
   "_comment": "Single source of truth for all stream hotkeys. Edits propagate to the OBS hotkey-legend overlay within ~5 sec. Add new entries by appending to the 'hotkeys' array \u2014 keep it sorted by category.",
   "hotkeys": [
     {
@@ -41,6 +41,36 @@
       "keys": "\u2318+,",
       "label": "OBS Settings",
       "category": "obs"
+    },
+    {
+      "keys": "Caps+J",
+      "label": "Mech monitor \u2014 small (fits frame)",
+      "category": "mech"
+    },
+    {
+      "keys": "Caps+K",
+      "label": "Mech monitor \u2014 medium",
+      "category": "mech"
+    },
+    {
+      "keys": "Caps+;",
+      "label": "Mech monitor \u2014 large (immersion break)",
+      "category": "mech"
+    },
+    {
+      "keys": "Caps+'",
+      "label": "Mech monitor \u2014 fullscreen (mech hidden)",
+      "category": "mech"
+    },
+    {
+      "keys": "Caps+D",
+      "label": "Mech mode \u2014 DECORATIVE (fake tactical)",
+      "category": "mech"
+    },
+    {
+      "keys": "Caps+V",
+      "label": "Mech mode \u2014 LIVE (Chrome window-capture)",
+      "category": "mech"
     }
   ]
 }

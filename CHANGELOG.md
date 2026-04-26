@@ -1,5 +1,58 @@
 # Changelog
 
+## [0.4.0] — 2026-04-26 (afternoon)
+
+Mech Cockpit overlay — portrait 1080×1920, cohesive cockpit framing, live ↔ decorative monitor mode, screen-share size presets controllable via Hammerspoon hotkeys.
+
+### Added
+
+**Cohesive portrait cockpit overlay:**
+- `obs/browser-sources/cockpit-mech-portrait.html` — full 1080×1920 (YouTube Shorts / Reels dimensions). Single-canvas cockpit framing top-to-bottom (no hard split): side rails with rivets, top status strip (HDG/ALT/SPD/PWR), main monitor frame (decorative or transparent for live), 4 secondary side displays (RADAR/SYS/FUEL/TGT), dashboard divider, pilot zone with 15° tilt slot, 3 control sticks (CYCLIC/THROTTLE/WEAPON), BHC-001 callsign.
+
+**Decorative tactical display** (when monitor in decorative mode):
+- Animated radar with sweep + blips
+- Live ticker showing NVDA/SPY/VIX/BTC mock data
+- Amber + magenta + gunmetal palette throughout
+
+**Live monitor mode** (Caps+V):
+- Central monitor area becomes transparent → OBS Window Capture beneath shows through
+- Chrome browser content (YouTube reactions / charts / news) appears as the mech's "tactical display"
+
+**Screen-share size presets** (Caps+J/K/L/;):
+- `small` — fits inside cockpit monitor frame neatly (immersive)
+- `medium` — slight expansion (still framed)
+- `large` — covers most of cockpit (immersion break trade-off)
+- `fullscreen` — cockpit hidden, pure Chrome (max readability)
+- Driven by `data/cockpit-state.json` polled every 1 sec
+
+**Hammerspoon mech bindings:**
+- Caps+J/K/L/; — size presets
+- Caps+D — DECORATIVE mode (radar + ticker)
+- Caps+V — LIVE mode (Chrome window-capture)
+- Each writes to cockpit-state.json + shows alert
+
+**Captions server endpoints extended:**
+- `/cockpit-mech` — serves the portrait cockpit HTML
+- `/cockpit-state.json` — serves the size+mode state file (Hammerspoon writes, HTML reads)
+
+**Hotkey legend updated** (`data/hotkeys.json`):
+- Added 6 mech bindings under "mech" category, version bumped to 0.4
+- Live legend overlay automatically picks them up within 5 sec
+
+### Manual OBS work required
+
+- `MANUAL_OBS_STEPS.md` — checklist for the OBS GUI work that can't be automated:
+  1. Resize OBS canvas to 1080×1920 portrait
+  2. Create "Mech Cockpit" scene
+  3. Add 3 sources in order: Cockpit Overlay (top) · Webcam (middle) · Chrome Share (bottom)
+  4. Audio routing for browser tab audio (BlackHole)
+  5. Re-export scene-collection.json
+
+### Notes
+
+- Earlier prototype `obs/browser-sources/cockpit-mech.html` (landscape 1920×1080 with scrolling backdrops) is preserved but superseded by the portrait variant. Backdrops feature deferred — current focus is live screen-share integration.
+- True OBS source resize (not just overlay mask) deferred to v0.5 — would need obs-websocket plugin install.
+
 ## [0.2.0] — 2026-04-26 (early AM)
 
 OBS polish layer — audio filters + brand overlay + webcam reaction cam scaffolding.
