@@ -1,39 +1,62 @@
 #!/bin/bash
-# captions-server.sh — tiny HTTP server that serves the latest whisper transcript
-# as JSON to the OBS browser source (live-captions.html).
+# captions-server.sh — tiny HTTP server for OBS browser sources.
 #
-# OBS browser sources can't read local files (CORS); this is the bridge.
-# Reads ~/voice/logs/transcripts.jsonl, returns last line at /latest endpoint,
-# serves the HTML at /.
+# OBS browser sources can't read local files reliably (CORS for fetch);
+# this is the bridge.
+#
+# Endpoints:
+#   GET /                  → live-captions.html (legacy default)
+#   GET /latest            → last whisper transcript line as JSON
+#   GET /hotkey-legend     → hotkey-legend.html
+#   GET /hotkeys.json      → the SSOT JSON file (edits propagate live)
+#   GET /lower-third       → lower-third.html
+#   GET /brand.json        → brand SSOT JSON
 
 PORT=8765
 TRANSCRIPTS="$HOME/voice/logs/transcripts.jsonl"
-HTML="$HOME/stream/obs/browser-sources/live-captions.html"
+BS_DIR="$HOME/stream/obs/browser-sources"
+DATA_DIR="$HOME/stream/data"
 
-cd "$HOME/stream/obs/browser-sources" || exit 1
+cd "$BS_DIR" || exit 1
 
-python3 - "$PORT" "$TRANSCRIPTS" "$HTML" <<'PYEOF'
+python3 - "$PORT" "$TRANSCRIPTS" "$BS_DIR" "$DATA_DIR" <<'PYEOF'
 import sys, json, os
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 PORT = int(sys.argv[1])
 TRANSCRIPTS = sys.argv[2]
-HTML = sys.argv[3]
+BS_DIR = sys.argv[3]
+DATA_DIR = sys.argv[4]
+
+# Endpoint → (relative file, content-type)
+ROUTES = {
+    '/':              (os.path.join(BS_DIR, 'live-captions.html'), 'text/html'),
+    '/hotkey-legend': (os.path.join(BS_DIR, 'hotkey-legend.html'), 'text/html'),
+    '/lower-third':   (os.path.join(BS_DIR, 'lower-third.html'),   'text/html'),
+    '/notes':         (os.path.join(BS_DIR, 'notes.html'),         'text/html'),
+    '/hotkeys.json':  (os.path.join(DATA_DIR, 'hotkeys.json'),     'application/json'),
+    '/brand.json':    (os.path.join(DATA_DIR, 'brand.json'),       'application/json'),
+}
 
 class CaptionHandler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):  # silence access log noise
         pass
 
+    def _send_headers(self, code, ctype):
+        self.send_response(code)
+        self.send_header('Content-Type', ctype)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Cache-Control', 'no-store')
+        self.end_headers()
+
     def do_GET(self):
-        if self.path == '/latest':
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.send_header('Cache-Control', 'no-store')
-            self.end_headers()
+        path = self.path.split('?')[0]  # strip query string
+
+        # /latest endpoint — special: tails the transcripts file
+        if path == '/latest':
+            self._send_headers(200, 'application/json')
             try:
                 with open(TRANSCRIPTS, 'rb') as f:
-                    # Seek to end, walk back to find last line
                     f.seek(0, 2)
                     size = f.tell()
                     chunk = min(size, 4096)
@@ -47,18 +70,24 @@ class CaptionHandler(BaseHTTPRequestHandler):
             except (FileNotFoundError, json.JSONDecodeError):
                 pass
             self.wfile.write(b'{}')
-        else:
-            # Serve the HTML
-            self.send_response(200)
-            self.send_header('Content-Type', 'text/html')
-            self.send_header('Cache-Control', 'no-store')
-            self.end_headers()
-            with open(HTML, 'rb') as f:
-                self.wfile.write(f.read())
+            return
+
+        # Static-file routes
+        if path in ROUTES:
+            file_path, ctype = ROUTES[path]
+            try:
+                with open(file_path, 'rb') as f:
+                    body = f.read()
+                self._send_headers(200, ctype)
+                self.wfile.write(body)
+                return
+            except FileNotFoundError:
+                self.send_error(404, f'Missing file: {file_path}')
+                return
+
+        self.send_error(404, f'Unknown route: {path}')
 
 print(f"Captions server listening on http://localhost:{PORT}")
-print(f"  Tailing: {TRANSCRIPTS}")
-print(f"  HTML:    {HTML}")
-print(f"  In OBS:  Add Browser Source, URL = http://localhost:{PORT}")
+print(f"  Routes: {', '.join(sorted(ROUTES.keys()))} + /latest")
 HTTPServer(('localhost', PORT), CaptionHandler).serve_forever()
 PYEOF
