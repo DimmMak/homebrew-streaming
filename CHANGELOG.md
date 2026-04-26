@@ -1,5 +1,44 @@
 # Changelog
 
+## [0.2.0] — 2026-04-26 (early AM)
+
+OBS polish layer — audio filters + brand overlay + webcam reaction cam scaffolding.
+
+### Added
+
+**Audio filter chain spec** (apply via OBS GUI):
+- `obs/filters/mic-filter-chain.md` — broadcast-standard chain: Speex Noise Suppression → Compressor (4:1, -18dB) → Limiter (-1dB)
+- Why Speex over RNNoise: faster on Apple Silicon, comparable quality, <0.5% CPU
+
+**Brand-driven lower-third overlay:**
+- `data/brand.json` — single source of truth (handle, repos, thesis, rotating taglines)
+- `obs/browser-sources/lower-third.html` — fetches brand.json, auto-rotates taglines every 8 sec, reloads JSON every 60 sec for live edits
+
+**Background removal plugin docs:**
+- `obs/PLUGINS.md` — pinned versions, install URLs, recovery procedure for obs-backgroundremoval (manual .pkg from locaal-ai/obs-backgroundremoval v1.1.13)
+
+**Webcam reaction cam scaffolding:**
+- Hammerspoon **Caps+R** hotkey added (in `~/.hammerspoon/init.lua`) — emits F13 globally, OBS catches as "Switch to scene Reaction Cam" hotkey
+
+**Verification:**
+- `scripts/verify-effects.sh` — health check for the polish layer (12 checks: audio spec, JSON validity, plugin install, hotkey binding, scene collection export)
+
+### Architecture decisions
+
+- **Audio settings as Markdown spec, not JSON export** — OBS doesn't expose per-source filter chains as portable JSON; the human-readable spec is more durable than reverse-engineering scene collection JSON
+- **Lower third reads from brand.json** — single source of truth means editing brand info once propagates to every overlay; no hardcoded strings
+- **Plugin install pinned to specific version** — auto-update could break OBS, so we record tested version + recovery steps
+- **Scene collection export deferred to manual step** — OBS scene collection JSON is large and machine-specific; documented in verify-effects.sh as a checklist item
+
+### Known limitations
+
+- Audio filter application requires OBS GUI clicks (no CLI for filter chain apply)
+- obs-backgroundremoval is .pkg install (not brew) — first-time setup requires manual download
+- Webcam scene swap requires OBS-side hotkey binding (Settings → Hotkeys → "Switch to scene Reaction Cam" → F13)
+
+---
+
+
 All notable changes to this streaming pipeline.
 
 ---
