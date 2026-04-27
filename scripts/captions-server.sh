@@ -38,7 +38,14 @@ ROUTES = {
     '/brand.json':    (os.path.join(DATA_DIR, 'brand.json'),       'application/json'),
     '/cockpit-mech':       (os.path.join(BS_DIR, 'cockpit-mech-portrait.html'), 'text/html'),
     '/cockpit-state.json': (os.path.join(DATA_DIR, 'cockpit-state.json'),       'application/json'),
+    '/cockpit-fx':         (os.path.join(BS_DIR, 'cockpit-fx.html'),            'text/html'),
+    '/cockpit-test':       (os.path.join(BS_DIR, 'cockpit-test.html'),          'text/html'),
+    '/cockpit-image-close':(os.path.join(os.path.expanduser('~'), 'stream/assets/cockpit/close.jpg'), 'image/jpeg'),
+    '/cockpit-image-wide': (os.path.join(os.path.expanduser('~'), 'stream/assets/cockpit/wide.jpg'),  'image/jpeg'),
 }
+
+# Legacy /cockpit-image route — defaults to close.jpg, overridable via env
+COCKPIT_IMAGE = os.environ.get('COCKPIT_IMAGE', os.path.join(os.path.expanduser('~'), 'stream/assets/cockpit/close.jpg'))
 
 class CaptionHandler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):  # silence access log noise
@@ -53,6 +60,20 @@ class CaptionHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = self.path.split('?')[0]  # strip query string
+
+        # /cockpit-image — serves the cockpit background image (configurable)
+        if path == '/cockpit-image':
+            try:
+                ext = os.path.splitext(COCKPIT_IMAGE)[1].lower()
+                ctype = {'.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png'}.get(ext, 'image/jpeg')
+                with open(COCKPIT_IMAGE, 'rb') as f:
+                    body = f.read()
+                self._send_headers(200, ctype)
+                self.wfile.write(body)
+                return
+            except FileNotFoundError:
+                self.send_error(404, f'Cockpit image not found: {COCKPIT_IMAGE}')
+                return
 
         # /latest endpoint — special: tails the transcripts file
         if path == '/latest':

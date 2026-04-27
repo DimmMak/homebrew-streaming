@@ -1,5 +1,52 @@
 # Changelog
 
+## [0.5.0] — 2026-04-26 (evening)
+
+Real cockpit image as background plate (replaces CSS-cockpit attempt) + animated FX overlay (smoke, slow neon pulse, sparks).
+
+### Added
+
+**Cockpit assets:**
+- `assets/cockpit/close.jpg` — 1080×1920 portrait Dr-D-style mech cockpit (pilot in chest, head visible above)
+- `assets/cockpit/wide.jpg` — 1080×1920 portrait full-mech-in-hangar shot (kept for future view-swap if hotkey conflict resolved)
+- `.gitignore` for intermediate files (gundam-*, SCR-*, wide.jpeg)
+
+**Animated FX overlay (`obs/browser-sources/cockpit-fx.html`):**
+- Top amber chevron pulse — 30s slow breath cycle (single peak per cycle, no rapid flicker)
+- Side purple strip pulses — 31s + 33s offset for natural drift
+- Bottom corner purple glow — 29s + 32s offset
+- 4 smoke wisps drift upward (8/9/11/13s cycles, all offset)
+- 5 falling sparks (yellow dots with motion blur)
+- Ambient frame breathe — 30s cycle
+- All effects use `mix-blend-mode: screen` to brighten existing image highlights without obscuring
+
+**Composite test page (`obs/browser-sources/cockpit-test.html`):**
+- Loads cockpit image + FX overlay together for design preview before OBS wiring
+- Two view slots (close/wide) with crossfade — currently single-view only (Caps+= / Caps+- view-swap binding hit Karabiner conflict, deferred)
+
+**Captions-server new endpoints:**
+- `/cockpit-fx` — FX overlay
+- `/cockpit-test` — composite preview
+- `/cockpit-image-close` — close.jpg
+- `/cockpit-image-wide` — wide.jpg
+
+### Changed
+
+- Pivoted from CSS-only cockpit (v0.4 portrait HTML) to real-image background + transparent FX overlay. The CSS approach looked like a wireframe; real image gives instant cockpit feel.
+- `data/cockpit-state.json` schema: added `view` field (close/wide)
+- `data/hotkeys.json`: 16 entries total (added Caps+= / Caps+- bindings — currently broken on Mac due to Karabiner intercepting; deferred)
+
+### Known issues
+
+- **Caps+= / Caps+- view-swap doesn't fire** — Karabiner Caps mapping appears to consume these chords before Hammerspoon. Either remove from Karabiner or pick different keys (e.g. Caps+, / Caps+. / Caps+/ / Caps+\\). User dropped feature for v0.5 to focus on single-view.
+- Image upscaled from low-res source (458×683 → 1080×1920) — slight blur. Upgrade by re-prompting Grok at higher res.
+
+### Deferred to v0.6
+
+- Re-attempt view swap with non-conflicting hotkeys
+- Wire OBS scene with image + FX + webcam + Window Capture for screen-share
+- Audio routing for browser tab audio (BlackHole)
+
 ## [0.4.0] — 2026-04-26 (afternoon)
 
 Mech Cockpit overlay — portrait 1080×1920, cohesive cockpit framing, live ↔ decorative monitor mode, screen-share size presets controllable via Hammerspoon hotkeys.

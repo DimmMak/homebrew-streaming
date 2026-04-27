@@ -43,16 +43,6 @@
       "category": "obs"
     },
     {
-      "keys": "Caps+J",
-      "label": "Mech monitor \u2014 small (fits frame)",
-      "category": "mech"
-    },
-    {
-      "keys": "Caps+K",
-      "label": "Mech monitor \u2014 medium",
-      "category": "mech"
-    },
-    {
       "keys": "Caps+;",
       "label": "Mech monitor \u2014 large (immersion break)",
       "category": "mech"
@@ -70,6 +60,26 @@
     {
       "keys": "Caps+V",
       "label": "Mech mode \u2014 LIVE (Chrome window-capture)",
+      "category": "mech"
+    },
+    {
+      "keys": "Caps+J",
+      "label": "Mech monitor \u2014 small (fits frame)",
+      "category": "mech"
+    },
+    {
+      "keys": "Caps+K",
+      "label": "Mech monitor \u2014 medium",
+      "category": "mech"
+    },
+    {
+      "keys": "Caps+=",
+      "label": "View - CLOSE (zoom in)",
+      "category": "mech"
+    },
+    {
+      "keys": "Caps+-",
+      "label": "View - WIDE (zoom out)",
       "category": "mech"
     }
   ]
