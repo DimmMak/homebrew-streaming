@@ -1,11 +1,6 @@
 {
-  "_comment": "State file for cockpit-mech-portrait.html and cockpit-test.html. Hammerspoon writes here on Caps+J/K/L/; (size), Caps+D/V (mode), Caps+1/2 (view).",
+  "_comment": "Hammerspoon-managed. Caps+J/K/L/; size, Caps+D/V mode, Caps+1/2 view.",
   "size": "small",
   "mode": "decorative",
-  "view": "close",
-  "_options": {
-    "size": ["small", "medium", "large", "fullscreen"],
-    "mode": ["decorative", "live"],
-    "view": ["close", "wide"]
-  }
+  "view": "wide"
 }
